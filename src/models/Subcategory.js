@@ -2,21 +2,6 @@ import mongoose, { Schema } from "mongoose";
 
 const { Types } = Schema;
 
-const FilterSchema = new Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  filterOptions: [
-    {
-      name: {
-        type: String,
-        required: true,
-      },
-    },
-  ],
-});
-
 const SubcategorySchema = new Schema({
   id: {
     type: String,
@@ -38,7 +23,6 @@ const SubcategorySchema = new Schema({
     type: Number,
     required: true,
   },
-  filters: [FilterSchema],
   meta: {
     type: Types.Mixed,
   },

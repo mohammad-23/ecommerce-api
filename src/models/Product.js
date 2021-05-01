@@ -69,10 +69,6 @@ const PriceSchema = new Schema(
 );
 
 const RelatedProductsSchema = new Schema({
-  id: {
-    type: String,
-    required: true,
-  },
   permalink: {
     type: String,
     required: true,
@@ -118,10 +114,6 @@ const VariantGroupSchema = new Schema({
 });
 
 const ProductSchema = new Schema({
-  id: {
-    type: String,
-    required: true,
-  },
   permalink: {
     type: String,
     required: true,
@@ -158,10 +150,14 @@ const ProductSchema = new Schema({
     default: 0,
   },
   variant_groups: [VariantGroupSchema],
-  categories: [
+  categories: {
+    type: Types.ObjectId,
+    ref: "category",
+  },
+  subcategories: [
     {
       type: Types.ObjectId,
-      ref: "category",
+      ref: "subcategory",
     },
   ],
   assets: [AssetsSchema],

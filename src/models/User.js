@@ -66,7 +66,7 @@ const UserSchema = new Schema(
     avatar: {
       type: String,
     },
-    shipping_address: [AddressSchema],
+    addresses: [AddressSchema],
     cards: [CardSchema],
     deleted: {
       type: Boolean,
