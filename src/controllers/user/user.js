@@ -1,12 +1,13 @@
 import User from "../../models/User";
+import { getUserId } from "../../utils/user";
 import catchAsync from "../../utils/catchAsync";
 
 export const getUser = catchAsync(async (req, res) => {
   try {
-    const { email } = req.body;
+    const userID = getUserId(req);
 
     const user = await User.findOne({
-      email,
+      _id: userID,
       deleted: false,
     }).select(["-password", "-deleted"]);
 
