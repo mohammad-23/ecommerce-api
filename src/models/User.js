@@ -50,18 +50,21 @@ const UserSchema = new Schema(
           (await User.where({ email }).countDocuments()) === 0,
         message: () => "User with this Email Already exists!",
       },
+      required: true,
     },
     password: {
       type: String,
       minlength: 8,
+      required: true,
     },
-    first_name: {
+    name: {
       type: String,
       minlength: 3,
+      required: true,
     },
-    last_name: {
-      type: String,
-      minlength: 3,
+    number: {
+      type: Number,
+      required: true,
     },
     avatar: {
       type: String,
@@ -70,6 +73,7 @@ const UserSchema = new Schema(
     cards: [CardSchema],
     deleted: {
       type: Boolean,
+      default: false,
     },
   },
   {
@@ -88,10 +92,12 @@ UserSchema.pre("save", async function (next) {
 });
 
 UserSchema.method("toJSON", function () {
-  const { _id, ...object } = this.toObject();
-  object.id = _id;
+  const userObject = this.toObject();
+  userObject.id = userObject._id;
 
-  return object;
+  delete userObject._id;
+
+  return userObject;
 });
 
 const User = mongoose.model("user", UserSchema, "user");

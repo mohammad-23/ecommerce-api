@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 import mongoose from "mongoose";
 
 dotenv.config();
@@ -16,9 +17,32 @@ mongoose.connection
 
 const app = express();
 
-app.get("/", async (req, res) => {
-  res.send("Hello World");
-});
+app.use(express.json({ limit: "5mb" }));
+app.use(express.urlencoded({ limit: "5mb", extended: true }));
+
+const whitelistedOrigins = ["http://localhost:3000"];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      if (whitelistedOrigins.indexOf(origin) === -1) {
+        const errorMessage = `The CORS policy for this site does not
+            allow access from the specified Origin.`;
+
+        return callback(new Error(errorMessage), false);
+      }
+
+      return callback(null, true);
+    },
+  })
+);
+
+require("./routes/authRoutes")(app);
+require("./routes/userRoutes")(app);
 
 app.listen({ port: PORT }, () => {
   console.log(`Server listening on port ${PORT}`);
