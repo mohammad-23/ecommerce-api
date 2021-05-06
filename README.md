@@ -3,15 +3,17 @@
 An ExpressJS API for an ecommerce web application.
 
 ---
+
 ## Requirements
 
 For development, you will only need Node.js and a node global package, npm, installed in your environement.
 
 ### Node
+
 - #### Node installation on Windows
 
   Just go on [official Node.js website](https://nodejs.org/) and download the installer.
-Also, be sure to have `git` available in your PATH, `npm` might need it (You can find git [here](https://git-scm.com/)).
+  Also, be sure to have `git` available in your PATH, `npm` might need it (You can find git [here](https://git-scm.com/)).
 
 - #### Node installation on Ubuntu
 
@@ -45,7 +47,8 @@ If you need to update `npm`, you can make it using `npm`! Cool right? After runn
 
 Create `.env` file and add the following environment vairables:
 
-- MONGODB_URI=mongodb+srv://mohammad:A5tKKw0NjrjSMJpp@cluster0.mrx75.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+- MONGODB_URI=mongodb+srv://mohammad:A5tKKw0NjrjSMJpp@cluster0.mrx75.mongodb.net/ecommerce?retryWrites=true&w=majority
+- MONGODB_URI_TEST=mongodb+srv://mohammad:A5tKKw0NjrjSMJpp@cluster0.mrx75.mongodb.net/ecommerce-test?retryWrites=true&w=majority
 - COMMERCE_API_KEY=pk_26067f758a4b63b1c1e280d7f61e1da69ea0b9dc15aea
 - PORT=5000
 - GOOGLE_CLIENT_ID=453703974762-5ddtl273absip5r3rq01io3jlupqmssl.apps.googleusercontent.com
@@ -53,7 +56,8 @@ Create `.env` file and add the following environment vairables:
 
 ## Running the project
 
-    $ npm start
+    $ npm run dev (in development)
+    $ npm start (in production)
 
 ## Simple build for production
 
