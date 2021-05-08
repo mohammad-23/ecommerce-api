@@ -8,7 +8,7 @@ export const login = catchAsync(async (req, res) => {
   const { email, password } = req.body;
 
   if (!(email && password)) {
-    res.status(300).json({ error: "Missing required fields" });
+    res.status(400).json({ message: "Missing required fields" });
   }
 
   try {
@@ -19,7 +19,7 @@ export const login = catchAsync(async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      throw new Error("Incorrect Password!");
+      res.status(400).json({ message: "Incorrect Password!" });
     }
 
     // eslint-disable-next-line no-unused-vars
@@ -29,7 +29,7 @@ export const login = catchAsync(async (req, res) => {
 
     res.status(200).send({ user: dbUser, token: `Bearer ${authToken}` });
   } catch (error) {
-    res.status(400).send({ error: error.message });
+    res.status(400).send({ message: error.message });
   }
 });
 
@@ -37,7 +37,7 @@ export const register = catchAsync(async (req, res) => {
   const { email, password, name, number } = req.body;
 
   if (!(email && password)) {
-    res.status(300).send({ error: "Missing required fields" });
+    res.status(400).send({ message: "Missing required fields" });
   }
 
   try {
@@ -49,12 +49,12 @@ export const register = catchAsync(async (req, res) => {
     const authToken = generateAuthToken(dbUser);
 
     res.status(200).send({
-      data: dbUser.id,
+      id: dbUser.id,
       token: authToken,
       user,
       message: "User Created Successfully",
     });
   } catch (error) {
-    res.status(400).send({ error: error.message });
+    res.status(400).send({ message: error.message });
   }
 });
