@@ -1,3 +1,3 @@
-import { getUser } from "./user";
+import { getUser, checkUser } from "./user";
 
-export default { getUser };
+export default { getUser, checkUser };
