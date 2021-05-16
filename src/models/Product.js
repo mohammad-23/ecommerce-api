@@ -68,34 +68,6 @@ const PriceSchema = new Schema(
   { _id: false }
 );
 
-const RelatedProductsSchema = new Schema({
-  permalink: {
-    type: String,
-    required: true,
-  },
-  name: {
-    type: String,
-    required: true,
-  },
-  short_description: {
-    type: String,
-    required: true,
-  },
-  long_description: {
-    type: String,
-    required: true,
-  },
-  price: PriceSchema,
-  media: {
-    image_type: {
-      type: String,
-    },
-    source: {
-      type: String,
-    },
-  },
-});
-
 const OptionsSchema = new Schema({
   name: {
     type: String,
@@ -113,60 +85,76 @@ const VariantGroupSchema = new Schema({
   options: [OptionsSchema],
 });
 
-const ProductSchema = new Schema({
-  permalink: {
-    type: String,
-    required: true,
-  },
-  name: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-  price: PriceSchema,
-  inventory: {
-    managed: {
-      type: Boolean,
-      default: false,
+const ProductSchema = new Schema(
+  {
+    permalink: {
+      type: String,
+      required: true,
     },
-    available: {
+    name: {
+      type: String,
+      required: true,
+    },
+    short_description: {
+      type: String,
+      required: true,
+    },
+    long_description: {
+      type: String,
+      required: true,
+    },
+    price: PriceSchema,
+    inventory: {
+      managed: {
+        type: Boolean,
+        default: false,
+      },
+      available: {
+        type: Number,
+        default: 0,
+      },
+    },
+    media: {
+      image_type: {
+        type: String,
+      },
+      source: {
+        type: String,
+      },
+    },
+    sort_order: {
       type: Number,
       default: 0,
     },
-  },
-  media: {
-    image_type: {
-      type: String,
+    variant_groups: [VariantGroupSchema],
+    related_products: [
+      {
+        type: Types.ObjectId,
+        ref: "product",
+      },
+    ],
+    assets: [AssetsSchema],
+    active: {
+      type: Boolean,
+      default: true,
     },
-    source: {
-      type: String,
-    },
+    categories: [
+      {
+        type: Types.ObjectId,
+        ref: "category",
+      },
+    ],
+    subcategories: [
+      {
+        type: Types.ObjectId,
+        ref: "subcategory",
+      },
+    ],
   },
-  sort_order: {
-    type: Number,
-    default: 0,
-  },
-  variant_groups: [VariantGroupSchema],
-  categories: {
-    type: Types.ObjectId,
-    ref: "category",
-  },
-  subcategories: [
-    {
-      type: Types.ObjectId,
-      ref: "subcategory",
-    },
-  ],
-  assets: [AssetsSchema],
-  related_products: [RelatedProductsSchema],
-  active: {
-    type: Boolean,
-    default: true,
-  },
-});
+  {
+    timestamps: { createdAt: "createDate", updatedAt: "updateDate" },
+  }
+);
 
 const Product = mongoose.model("product", ProductSchema, "product");
 

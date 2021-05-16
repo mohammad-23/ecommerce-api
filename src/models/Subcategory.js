@@ -2,31 +2,39 @@ import mongoose, { Schema } from "mongoose";
 
 const { Types } = Schema;
 
-const SubcategorySchema = new Schema({
-  id: {
-    type: String,
-    required: true,
+const SubcategorySchema = new Schema(
+  {
+    id: {
+      type: String,
+      required: true,
+    },
+    slug: {
+      type: String,
+      required: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    number_of_products: {
+      type: Number,
+      required: true,
+    },
+    meta: {
+      type: Types.Mixed,
+    },
+    deleted: {
+      type: Boolean,
+    },
   },
-  slug: {
-    type: String,
-    required: true,
-  },
-  name: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-  number_of_products: {
-    type: Number,
-    required: true,
-  },
-  meta: {
-    type: Types.Mixed,
-  },
-});
+  {
+    timestamps: { createdAt: "createDate", updatedAt: "updateDate" },
+  }
+);
 
 const Subcategory = mongoose.model(
   "subcategory",
