@@ -49,7 +49,7 @@ export const getProducts = catchAsync(async (req, res) => {
     if (size) {
       filterQuery = {
         ...filterQuery,
-        "variant_groups.name": "Size",
+        "variant_groups.options.name": size,
       };
     }
 
@@ -188,21 +188,30 @@ export const getProducts = catchAsync(async (req, res) => {
       };
     }
 
-    const products = await Product.find(filterQuery)
+    // To Display Products according to filters selected
+    const filteredProducts = await Product.find(filterQuery)
       .populate(categoryFilterForPopulate)
       .populate(subcategoryFilterForPopulate)
       .sort(sortObject)
       .limit(Number(limit))
       .skip(Number(offset));
 
-    const finalResult = products.filter(
+    // Remove all products that don't hae a category or subcategory (required fields)
+    const finalResult = filteredProducts.filter(
       (product) => product.categories.length && product.subcategories.length
     );
+
+    // To Display data for all products in the filters section
+    const totalProducts = await Product.find({ active: true })
+      .populate(categoryFilterForPopulate)
+      .populate(subcategoryFilterForPopulate)
+      .sort(sortObject);
 
     const productsCount = await Product.countDocuments(filterQuery);
 
     res.status(200).send({
-      products: finalResult,
+      totalProducts,
+      filteredProducts: finalResult,
       total: productsCount,
       categories,
       subcategories,
