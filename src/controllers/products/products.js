@@ -2,6 +2,7 @@ import Product from "../../models/Product";
 import Category from "../../models/Category";
 import catchAsync from "../../utils/catchAsync";
 import toTitleCase from "../../utils/toTitleCase";
+import { ASCENDING } from "../../utils/constants";
 
 export const getProducts = catchAsync(async (req, res) => {
   try {
@@ -15,7 +16,7 @@ export const getProducts = catchAsync(async (req, res) => {
     } = req.query;
 
     let filterQuery = { active: true };
-    let sortObject = { createDate: "asc" };
+    let sortObject = { createDate: ASCENDING };
     let categories = [];
 
     if (range) {
