@@ -144,12 +144,6 @@ const ProductSchema = new Schema(
         ref: "category",
       },
     ],
-    subcategories: [
-      {
-        type: Types.ObjectId,
-        ref: "subcategory",
-      },
-    ],
   },
   {
     timestamps: { createdAt: "createDate", updatedAt: "updateDate" },

@@ -15,10 +15,20 @@ const CategorySchema = new Schema(
     name: {
       type: String,
       required: true,
+      validate: {
+        validator: async (name) =>
+          (await Category.where({ name }).countDocuments()) === 0,
+        message: () => "Category with this Name already exists!",
+      },
     },
     description: {
       type: String,
       required: true,
+    },
+    category_type: {
+      type: String,
+      enum: ["primary_cat", "secondary_cat"],
+      default: "secondary_cat",
     },
     number_of_products: {
       type: Number,

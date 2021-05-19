@@ -6,11 +6,10 @@ import cors from "cors";
 import mongoose from "mongoose";
 
 require("./models/User");
-require("./models/Category");
-require("./models/Subcategory");
 require("./models/Cart");
 require("./models/Orders");
 require("./models/Product");
+require("./models/Category");
 
 const PORT = process.env.PORT || 5000;
 
