@@ -69,7 +69,13 @@ export const getProducts = catchAsync(async (req, res) => {
       .skip(Number(offset));
 
     // To Display data for all products in the filters section
-    const totalProducts = await Product.find({ active: true })
+    const filterForAllProducts = { active: true };
+
+    if (filterQuery.categories) {
+      filterForAllProducts.categories = filterQuery.categories;
+    }
+
+    const totalProducts = await Product.find(filterForAllProducts)
       .populate("categories")
       .sort(sortObject);
 
