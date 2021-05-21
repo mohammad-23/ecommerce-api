@@ -4,19 +4,43 @@ const { Types } = Schema;
 
 const OrderSchema = new Schema(
   {
-    quantity: {
+    total_items: {
       type: Number,
       required: true,
       default: 0,
     },
-    price: {
+    total_price: {
       type: Number,
       default: 0,
     },
+    shipping_address: {
+      address: {
+        type: String,
+        required: true,
+      },
+      pin_code: {
+        type: String,
+        required: true,
+      },
+      country: {
+        type: String,
+        required: true,
+      },
+      city: {
+        type: String,
+        required: true,
+      },
+    },
     items: [
       {
-        type: Types.ObjectId,
-        ref: "product",
+        product: {
+          type: Types.ObjectId,
+          ref: "product",
+        },
+        quantity: {
+          type: Number,
+          required: true,
+        },
       },
     ],
     customer: {
@@ -46,8 +70,13 @@ const OrderSchema = new Schema(
         required: true,
       },
     },
+    status: {
+      type: String,
+      enum: ["success", "failed"],
+    },
     deleted: {
       type: Boolean,
+      default: false,
     },
   },
   {

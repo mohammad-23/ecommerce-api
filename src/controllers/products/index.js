@@ -1,3 +1,8 @@
-import { getProductDetails, getProducts } from "./products";
+import {
+  getProductDetails,
+  getProducts,
+  getFavourites,
+  getHotDeals,
+} from "./products";
 
-export default { getProductDetails, getProducts };
+export default { getProductDetails, getProducts, getFavourites, getHotDeals };

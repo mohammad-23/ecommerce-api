@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 
 require("./models/User");
 require("./models/Cart");
-require("./models/Orders");
+require("./models/Order");
 require("./models/Product");
 require("./models/Category");
 
@@ -66,4 +66,6 @@ connection
 
 require("./routes/authRoutes")(app);
 require("./routes/userRoutes")(app);
+require("./routes/cartRoutes")(app);
+require("./routes/orderRoutes")(app);
 require("./routes/productRoutes")(app);

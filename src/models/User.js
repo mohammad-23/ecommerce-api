@@ -93,8 +93,8 @@ UserSchema.pre("save", async function (next) {
 
 UserSchema.method("toJSON", function () {
   const userObject = this.toObject();
-  userObject.id = userObject._id;
 
+  userObject.id = userObject._id;
   delete userObject._id;
 
   return userObject;
