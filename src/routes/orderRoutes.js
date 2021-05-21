@@ -5,7 +5,11 @@ module.exports = (app) => {
     orders.getOrders(req, res, next);
   });
 
-  app.get("/api/orders/create", (req, res, next) => {
+  app.post("/api/orders/create", (req, res, next) => {
     orders.createOrder(req, res, next);
+  });
+
+  app.put("/api/orders/:id", (req, res, next) => {
+    orders.updateOrder(req, res, next);
   });
 };

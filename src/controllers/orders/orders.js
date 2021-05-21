@@ -28,7 +28,7 @@ export const getOrders = catchAsync(async (req, res) => {
 export const createOrder = catchAsync(async (req, res) => {
   try {
     const userId = await getUserId(req);
-    const { payment, status } = req.body;
+    const { payment, status, shipping_address } = req.body;
 
     if (!userId) {
       res.status(401).send({ message: "Invalid Authentication!" });
@@ -43,6 +43,7 @@ export const createOrder = catchAsync(async (req, res) => {
       total_price: cartData.total_price,
       total_items: cartData.total_items,
       status,
+      shipping_address,
     });
 
     res.status(200).send({
@@ -58,13 +59,22 @@ export const createOrder = catchAsync(async (req, res) => {
 export const updateOrder = catchAsync(async (req, res) => {
   try {
     const userId = await getUserId(req);
-    const { payment, status, orderId } = req.body;
+    const { payment, status } = req.body;
+    const { id } = req.params;
 
     if (!userId) {
       res.status(401).send({ message: "Invalid Authentication!" });
     }
 
-    const userOrder = await Order.findOne({ _id: orderId, deleted: false });
+    const userOrder = await Order.findOne({
+      _id: id,
+      customer: userId,
+      deleted: false,
+    });
+
+    if (!userOrder) {
+      res.status(500).send({ message: "Order Not Found" });
+    }
 
     if (payment) {
       userOrder.payment = payment;

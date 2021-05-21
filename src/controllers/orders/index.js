@@ -1,3 +1,3 @@
-import { getOrders, createOrder } from "./orders";
+import { getOrders, createOrder, updateOrder } from "./orders";
 
-export default { getOrders, createOrder };
+export default { getOrders, createOrder, updateOrder };

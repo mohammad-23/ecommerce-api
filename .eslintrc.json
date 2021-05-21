@@ -37,7 +37,12 @@
       { "blankLine": "always", "prev": ["case", "default"], "next": "*" },
       { "blankLine": "always", "prev": "*", "next": "export" },
       { "blankLine": "always", "prev": "export", "next": "*" },
-      { "blankLine": "always", "prev": "*", "next": "try" }
+      { "blankLine": "always", "prev": "*", "next": "try" },
+      {
+        "blankLine": "always",
+        "prev": "import",
+        "next": ["const", "let", "var"]
+      }
     ]
   },
   "overrides": [

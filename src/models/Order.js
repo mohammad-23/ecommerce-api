@@ -57,7 +57,7 @@ const OrderSchema = new Schema(
         type: Number,
         required: true,
       },
-      card: {
+      brand: {
         type: String,
         required: true,
       },
@@ -69,10 +69,19 @@ const OrderSchema = new Schema(
         type: Number,
         required: true,
       },
+      exp_month: {
+        type: Number,
+      },
+      exp_year: {
+        type: Number,
+      },
+      last4: {
+        type: String,
+      },
     },
     status: {
       type: String,
-      enum: ["success", "failed"],
+      enum: ["succeeded", "cancelled", "processing"],
     },
     deleted: {
       type: Boolean,
