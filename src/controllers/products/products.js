@@ -2,12 +2,12 @@ import Product from "../../models/Product";
 import Category from "../../models/Category";
 import catchAsync from "../../utils/catchAsync";
 import toTitleCase from "../../utils/toTitleCase";
-import { ASCENDING } from "../../utils/constants";
+import { ASCENDING, DESCENDING } from "../../utils/constants";
 
 export const getProducts = catchAsync(async (req, res) => {
   try {
     const {
-      limit = 35,
+      limit = 15,
       offset = 0,
       orderBy,
       range,
@@ -90,6 +90,66 @@ export const getProducts = catchAsync(async (req, res) => {
     });
   } catch (error) {
     res.status(400).send({ message: error.message });
+  }
+});
+
+export const getHotDeals = catchAsync(async (req, res) => {
+  try {
+    const { orderBy, variant } = req.query;
+
+    let filterQuery = { active: true };
+    let sortObject = { createDate: ASCENDING };
+
+    if (variant) {
+      const variantFilter = variant.split(",").map((item) => toTitleCase(item));
+
+      filterQuery = {
+        ...filterQuery,
+        "variant_groups.options.name": { $in: variantFilter },
+      };
+    }
+
+    if (orderBy) {
+      const [sortKey, sortOrder] = orderBy.split("-");
+
+      sortObject = { [sortKey]: sortOrder };
+    }
+
+    const hotDeals = await Product.find(filterQuery).sort(sortObject).limit(10);
+
+    res.status(200).json(hotDeals);
+  } catch (error) {
+    res.status(400).send({ messsage: error.message });
+  }
+});
+
+export const getFavourites = catchAsync(async (req, res) => {
+  try {
+    const { orderBy, variant } = req.query;
+
+    let filterQuery = { active: true };
+    let sortObject = { createDate: DESCENDING };
+
+    if (variant) {
+      const variantFilter = variant.split(",").map((item) => toTitleCase(item));
+
+      filterQuery = {
+        ...filterQuery,
+        "variant_groups.options.name": { $in: variantFilter },
+      };
+    }
+
+    if (orderBy) {
+      const [sortKey, sortOrder] = orderBy.split("-");
+
+      sortObject = { [sortKey]: sortOrder };
+    }
+
+    const hotDeals = await Product.find(filterQuery).sort(sortObject).limit(10);
+
+    res.status(200).json(hotDeals);
+  } catch (error) {
+    res.status(400).send({ messsage: error.message });
   }
 });
 

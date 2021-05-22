@@ -4,19 +4,28 @@ const { Types } = Schema;
 
 const CartSchema = new Schema(
   {
-    quantity: {
+    total_items: {
       type: Number,
-      required: true,
       default: 0,
     },
-    price: {
+    total_price: {
       type: Number,
       default: 0,
     },
     items: [
       {
-        type: Types.ObjectId,
-        ref: "product",
+        product: {
+          type: Types.ObjectId,
+          ref: "product",
+        },
+        quantity: {
+          type: Number,
+          default: 1,
+        },
+        total_price: {
+          type: Number,
+          required: true,
+        },
       },
     ],
     customer: {
@@ -24,8 +33,14 @@ const CartSchema = new Schema(
       required: true,
       ref: "user",
     },
+    cart_status: {
+      type: String,
+      enum: ["in_progress", "abandoned"],
+      default: "in_progress",
+    },
     deleted: {
       type: Boolean,
+      default: false,
     },
   },
   {
