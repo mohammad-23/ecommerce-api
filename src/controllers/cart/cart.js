@@ -14,7 +14,7 @@ export const getCart = catchAsync(async (req, res) => {
     const userCart = await Cart.findOne({ customer: userId, deleted: false });
 
     res.status(200).send({
-      data: userCart,
+      cart: userCart,
       id: userCart._id,
     });
   } catch (error) {
@@ -44,7 +44,7 @@ export const createCart = catchAsync(async (req, res) => {
 export const updateCart = catchAsync(async (req, res) => {
   try {
     const userId = getUserId(req);
-    const { cartId, product } = req.body;
+    const { product } = req.body;
 
     if (!userId) {
       res.status(401).send({ message: "Invalid Authentication!" });
@@ -60,7 +60,6 @@ export const updateCart = catchAsync(async (req, res) => {
     }
 
     const userCart = await Cart.findOne({
-      _id: cartId,
       customer: userId,
       deleted: false,
     });

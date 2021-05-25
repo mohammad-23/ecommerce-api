@@ -19,6 +19,18 @@ const AddressSchema = new Schema({
     type: String,
     required: true,
   },
+  state: {
+    type: String,
+    required: true,
+  },
+  phone_number: {
+    type: String,
+    required: true,
+  },
+  is_default: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const CardSchema = new Schema({
@@ -45,12 +57,8 @@ const UserSchema = new Schema(
   {
     email: {
       type: String,
-      validate: {
-        validator: async (email) =>
-          (await User.where({ email }).countDocuments()) === 0,
-        message: () => "User with this Email Already exists!",
-      },
       required: true,
+      unique: true,
     },
     password: {
       type: String,

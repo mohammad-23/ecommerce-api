@@ -9,7 +9,7 @@ module.exports = (app) => {
     cart.createCart(req, res, next);
   });
 
-  app.put("/api/cart/update", (req, res, next) => {
+  app.put("/api/cart/", (req, res, next) => {
     cart.updateCart(req, res, next);
   });
 
