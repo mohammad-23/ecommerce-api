@@ -10,7 +10,7 @@ export const getOrders = catchAsync(async (req, res) => {
     const userId = getUserId(req);
 
     if (!userId) {
-      res.status(401).send({ message: "Invalid Authentication!" });
+      res.status(401).send({ message: "Unauthorized: Access is denied!!" });
     }
 
     const orders = await Order.find({ customer: userId })
@@ -31,7 +31,7 @@ export const createOrder = catchAsync(async (req, res) => {
     const { payment, status, shipping_address } = req.body;
 
     if (!userId) {
-      res.status(401).send({ message: "Invalid Authentication!" });
+      res.status(401).send({ message: "Unauthorized: Access is denied!!" });
     }
 
     const cartData = await Cart.findOne({ customer: userId, deleted: false });
@@ -63,7 +63,7 @@ export const updateOrder = catchAsync(async (req, res) => {
     const { id } = req.params;
 
     if (!userId) {
-      res.status(401).send({ message: "Invalid Authentication!" });
+      res.status(401).send({ message: "Unauthorized: Access is denied!!" });
     }
 
     const userOrder = await Order.findOne({
