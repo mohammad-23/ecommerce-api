@@ -74,7 +74,7 @@ const UserSchema = new Schema(
       type: Number,
       required: true,
     },
-    avatar: {
+    picture: {
       type: String,
     },
     addresses: [AddressSchema],

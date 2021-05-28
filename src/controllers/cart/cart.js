@@ -8,7 +8,7 @@ export const getCart = catchAsync(async (req, res) => {
     const userId = getUserId(req);
 
     if (!userId) {
-      res.status(401).send({ message: "Invalid Authentication!" });
+      res.status(401).send({ message: "Unauthorized: Access is denied!!" });
     }
 
     const userCart = await Cart.findOne({ customer: userId, deleted: false });
@@ -27,7 +27,7 @@ export const createCart = catchAsync(async (req, res) => {
     const userId = getUserId(req);
 
     if (!userId) {
-      res.status(401).send({ message: "Invalid Authentication!" });
+      res.status(401).send({ message: "Unauthorized: Access is denied!!" });
     }
 
     const userCart = await Cart.create({ customer: userId });
@@ -47,7 +47,7 @@ export const updateCart = catchAsync(async (req, res) => {
     const { product } = req.body;
 
     if (!userId) {
-      res.status(401).send({ message: "Invalid Authentication!" });
+      res.status(401).send({ message: "Unauthorized: Access is denied!!" });
     }
 
     const addedProduct = await Product.findOne({ _id: product.id });
@@ -125,7 +125,7 @@ export const clearCart = catchAsync(async (req, res) => {
     const { cartId } = req.body;
 
     if (!userId) {
-      res.status(401).send({ message: "Invalid Authentication!" });
+      res.status(401).send({ message: "Unauthorized: Access is denied!!" });
     }
 
     const userCart = await Cart.findOne({

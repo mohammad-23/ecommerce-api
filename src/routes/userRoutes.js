@@ -12,4 +12,12 @@ module.exports = (app) => {
   app.put("/api/users", (req, res, next) => {
     user.updateUser(req, res, next);
   });
+
+  app.post("/api/users/change-password", (req, res, next) => {
+    user.changePassword(req, res, next);
+  });
+
+  app.delete("/api/users/address/:id", (req, res, next) => {
+    user.deleteAddress(req, res, next);
+  });
 };
