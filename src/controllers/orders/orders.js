@@ -47,7 +47,7 @@ export const createOrder = catchAsync(async (req, res) => {
     });
 
     res.status(200).send({
-      data: order,
+      order,
       id: order._id,
       message: "Order Created SUccessfully!",
     });

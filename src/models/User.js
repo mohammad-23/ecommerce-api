@@ -2,6 +2,8 @@ import mongoose, { Schema } from "mongoose";
 
 import { hashPassword } from "../utils/user";
 
+const { Types } = Schema;
+
 const AddressSchema = new Schema({
   address: {
     type: String,
@@ -79,6 +81,12 @@ const UserSchema = new Schema(
     },
     addresses: [AddressSchema],
     cards: [CardSchema],
+    wishlist: [
+      {
+        type: Types.ObjectId,
+        ref: "product",
+      },
+    ],
     deleted: {
       type: Boolean,
       default: false,

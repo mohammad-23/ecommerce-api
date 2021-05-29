@@ -3,13 +3,18 @@ import bcrypt from "bcryptjs";
 import User from "../../models/User";
 import { getUserId } from "../../utils/user";
 import catchAsync from "../../utils/catchAsync";
+import {
+  DATA_UPDATE_SUCCESS,
+  UNAUTHORIZED,
+  USER_NOT_FOUND,
+} from "../../utils/constants";
 
 export const getUser = catchAsync(async (req, res) => {
   try {
     const userId = getUserId(req);
 
     if (!userId) {
-      res.status(401).send({ message: "Unauthorized: Access is denied!" });
+      res.status(401).send({ message: UNAUTHORIZED });
     }
 
     const queryFilter = {
@@ -19,7 +24,13 @@ export const getUser = catchAsync(async (req, res) => {
 
     const user = await User.findOne({
       ...queryFilter,
-    }).select(["-password", "-deleted"]);
+    })
+      .select(["-password", "-deleted"])
+      .populate("wishlist");
+
+    if (!user) {
+      res.status(404).send({ message: USER_NOT_FOUND });
+    }
 
     res.status(200).send({ user });
   } catch (error) {
@@ -36,12 +47,12 @@ export const checkUser = catchAsync(async (req, res) => {
 
     const user = await User.findOne({
       ...queryFilter,
-    }).select(["-password", "-deleted"]);
+    });
 
     if (user) {
       res.status(200).send(true);
     } else {
-      res.status(404).send({ message: "User does not exist!" });
+      res.status(404).send({ message: USER_NOT_FOUND });
     }
   } catch (error) {
     res.status(400).send({ message: error.message });
@@ -50,11 +61,11 @@ export const checkUser = catchAsync(async (req, res) => {
 
 export const updateUser = catchAsync(async (req, res) => {
   try {
-    const { address, name, email, number } = req.body;
+    const { address, name, email, number, wishlist } = req.body;
     const userId = getUserId(req);
 
     if (!userId) {
-      res.status(401).send({ message: "Unauthorized: Access is denied!" });
+      res.status(401).send({ message: UNAUTHORIZED });
     }
 
     const queryFilter = {
@@ -64,10 +75,10 @@ export const updateUser = catchAsync(async (req, res) => {
 
     const user = await User.findOne({
       ...queryFilter,
-    });
+    }).populate("wishlist");
 
     if (!user) {
-      res.status(400).send({ message: "User not found!" });
+      res.status(400).send({ message: USER_NOT_FOUND });
     }
 
     if (email) {
@@ -80,6 +91,10 @@ export const updateUser = catchAsync(async (req, res) => {
 
     if (name) {
       user.name = name;
+    }
+
+    if (wishlist) {
+      user.wishlist.push(wishlist);
     }
 
     if (address) {
@@ -105,9 +120,7 @@ export const updateUser = catchAsync(async (req, res) => {
     // eslint-disable-next-line no-unused-vars
     const { password, deleted, ...updatedData } = user._doc;
 
-    res
-      .status(200)
-      .send({ message: "Data updated successfully!", user: updatedData });
+    res.status(200).send({ message: DATA_UPDATE_SUCCESS, user: updatedData });
   } catch (error) {
     res.status(400).send({ message: error.message });
   }
@@ -119,13 +132,13 @@ export const changePassword = catchAsync(async (req, res) => {
     const userId = getUserId(req);
 
     if (!userId) {
-      res.status(401).send({ message: "Unauthorized: Access is denied! " });
+      res.status(401).send({ message: UNAUTHORIZED });
     }
 
     const user = await User.findOne({ _id: userId, deleted: false });
 
     if (!user) {
-      res.status(400).send({ message: "User doesn't exist!" });
+      res.status(400).send({ message: USER_NOT_FOUND });
     }
 
     const isMatch = await bcrypt.compare(currentPassword, user.password);
@@ -149,16 +162,15 @@ export const deleteAddress = catchAsync(async (req, res) => {
     const userId = getUserId(req);
 
     if (!userId) {
-      res.status(401).send({ message: "Unauthorized: Access is denied!" });
+      res.status(401).send({ message: UNAUTHORIZED });
     }
 
-    const user = await User.findOne({ _id: userId, deleted: false }).select([
-      "-password",
-      "-deleted",
-    ]);
+    const user = await User.findOne({ _id: userId, deleted: false })
+      .select(["-password", "-deleted"])
+      .populate("wishlist");
 
     if (!user) {
-      res.status(400).send({ message: "User not found!" });
+      res.status(400).send({ message: USER_NOT_FOUND });
     }
 
     const existingAddressIndex = user.addresses.findIndex(
@@ -181,7 +193,46 @@ export const deleteAddress = catchAsync(async (req, res) => {
 
     await user.save();
 
-    res.status(200).send({ user, message: "Address deleted Successfully!" });
+    res.status(200).send({ user, message: DATA_UPDATE_SUCCESS });
+  } catch (error) {
+    res.status(400).send({ message: error.message });
+  }
+});
+
+export const removeWishlistItem = catchAsync(async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = getUserId(req);
+
+    if (!userId) {
+      res.status(401).send({ message: UNAUTHORIZED });
+    }
+
+    const queryFilter = {
+      _id: userId,
+      deleted: false,
+    };
+
+    const user = await User.findOne({
+      ...queryFilter,
+    }).populate("wishlist");
+
+    if (!user) {
+      res.status(400).send({ message: USER_NOT_FOUND });
+    }
+
+    const wishlistItemIndex = user.wishlist.findIndex(
+      (item) => item._id.toString() === id
+    );
+
+    user.wishlist.splice(wishlistItemIndex, 1);
+
+    await user.save();
+
+    // eslint-disable-next-line no-unused-vars
+    const { password, deleted, ...updatedData } = user._doc;
+
+    res.status(200).send({ message: DATA_UPDATE_SUCCESS, user: updatedData });
   } catch (error) {
     res.status(400).send({ message: error.message });
   }

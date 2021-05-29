@@ -16,4 +16,8 @@ module.exports = (app) => {
   app.put("/api/cart/clear", (req, res, next) => {
     cart.clearCart(req, res, next);
   });
+
+  app.delete("/api/cart/product/:id", (req, res, next) => {
+    cart.deleteCartItem(req, res, next);
+  });
 };

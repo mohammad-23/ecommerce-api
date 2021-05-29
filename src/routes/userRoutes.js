@@ -20,4 +20,8 @@ module.exports = (app) => {
   app.delete("/api/users/address/:id", (req, res, next) => {
     user.deleteAddress(req, res, next);
   });
+
+  app.delete("/api/users/wishlist/:id", (req, res, next) => {
+    user.removeWishlistItem(req, res, next);
+  });
 };
