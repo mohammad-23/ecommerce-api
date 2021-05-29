@@ -4,6 +4,7 @@ import {
   updateUser,
   changePassword,
   deleteAddress,
+  removeWishlistItem,
 } from "./user";
 
 export default {
@@ -12,4 +13,5 @@ export default {
   updateUser,
   changePassword,
   deleteAddress,
+  removeWishlistItem,
 };

@@ -2,7 +2,11 @@ import Product from "../../models/Product";
 import Category from "../../models/Category";
 import catchAsync from "../../utils/catchAsync";
 import toTitleCase from "../../utils/toTitleCase";
-import { ASCENDING, DESCENDING } from "../../utils/constants";
+import {
+  ASCENDING,
+  DESCENDING,
+  PRODUCT_NOT_FOUND,
+} from "../../utils/constants";
 
 export const getProducts = catchAsync(async (req, res) => {
   try {
@@ -160,6 +164,10 @@ export const getProductDetails = catchAsync(async (req, res) => {
     const product = await Product.findOne({ _id: id, active: true })
       .populate("related_products")
       .populate("categories");
+
+    if (!product) {
+      res.status(400).send({ message: PRODUCT_NOT_FOUND });
+    }
 
     res.status(200).json(product);
   } catch (error) {

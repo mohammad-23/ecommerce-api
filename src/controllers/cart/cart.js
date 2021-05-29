@@ -2,13 +2,18 @@ import Cart from "../../models/Cart";
 import Product from "../../models/Product";
 import { getUserId } from "../../utils/user";
 import catchAsync from "../../utils/catchAsync";
+import {
+  CART_NOT_FOUND,
+  PRODUCT_NOT_FOUND,
+  UNAUTHORIZED,
+} from "../../utils/constants";
 
 export const getCart = catchAsync(async (req, res) => {
   try {
     const userId = getUserId(req);
 
     if (!userId) {
-      res.status(401).send({ message: "Unauthorized: Access is denied!!" });
+      res.status(401).send({ message: UNAUTHORIZED });
     }
 
     const userCart = await Cart.findOne({ customer: userId, deleted: false });
@@ -27,13 +32,13 @@ export const createCart = catchAsync(async (req, res) => {
     const userId = getUserId(req);
 
     if (!userId) {
-      res.status(401).send({ message: "Unauthorized: Access is denied!!" });
+      res.status(401).send({ message: UNAUTHORIZED });
     }
 
     const userCart = await Cart.create({ customer: userId });
 
     res.status(200).send({
-      data: userCart,
+      cart: userCart,
       id: userCart._id,
     });
   } catch (error) {
@@ -47,7 +52,7 @@ export const updateCart = catchAsync(async (req, res) => {
     const { product } = req.body;
 
     if (!userId) {
-      res.status(401).send({ message: "Unauthorized: Access is denied!!" });
+      res.status(401).send({ message: UNAUTHORIZED });
     }
 
     const addedProduct = await Product.findOne({ _id: product.id });
@@ -65,7 +70,7 @@ export const updateCart = catchAsync(async (req, res) => {
     });
 
     if (!userCart) {
-      res.status(300).send({ message: "Cart not found!" });
+      res.status(300).send({ message: CART_NOT_FOUND });
     }
 
     const itemIndexInCart = userCart.items.findIndex(
@@ -111,7 +116,7 @@ export const updateCart = catchAsync(async (req, res) => {
     await addedProduct.save();
 
     res.status(200).send({
-      data: userCart,
+      cart: userCart,
       id: userCart._id,
     });
   } catch (error) {
@@ -125,7 +130,7 @@ export const clearCart = catchAsync(async (req, res) => {
     const { cartId } = req.body;
 
     if (!userId) {
-      res.status(401).send({ message: "Unauthorized: Access is denied!!" });
+      res.status(401).send({ message: UNAUTHORIZED });
     }
 
     const userCart = await Cart.findOne({
@@ -135,7 +140,7 @@ export const clearCart = catchAsync(async (req, res) => {
     });
 
     if (!userCart) {
-      res.status(300).send({ message: "Cart not found!" });
+      res.status(300).send({ message: CART_NOT_FOUND });
     }
 
     await userCart.items.map(async (item) => {
@@ -155,7 +160,43 @@ export const clearCart = catchAsync(async (req, res) => {
     await userCart.save();
 
     res.status(200).send({
-      data: userCart,
+      cart: userCart,
+      id: userCart._id,
+    });
+  } catch (error) {
+    res.status(400).send({ message: error.message });
+  }
+});
+
+export const deleteCartItem = catchAsync(async (req, res) => {
+  try {
+    const userId = getUserId(req);
+    const { id } = req.params;
+
+    if (!userId) {
+      res.status(401).send({ message: UNAUTHORIZED });
+    }
+
+    const userCart = await Cart.findOne({ customer: userId, deleted: false });
+
+    if (!userCart) {
+      res.status(400).send({ message: CART_NOT_FOUND });
+    }
+
+    const cartItemIndex = userCart.items.findIndex(
+      (item) => item.product.toString() === id
+    );
+
+    if (cartItemIndex === -1) {
+      res.status(400).send({ message: PRODUCT_NOT_FOUND });
+    }
+
+    userCart.items.splice(cartItemIndex, 1);
+
+    await userCart.save();
+
+    res.status(200).send({
+      cart: userCart,
       id: userCart._id,
     });
   } catch (error) {
