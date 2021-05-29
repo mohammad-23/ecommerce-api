@@ -11,7 +11,10 @@ export const getCart = catchAsync(async (req, res) => {
       res.status(401).send({ message: "Invalid Authentication!" });
     }
 
-    const userCart = await Cart.findOne({ customer: userId, deleted: false });
+    const userCart = await Cart.findOne({
+      customer: userId,
+      deleted: false,
+    }).populate("items.product");
 
     res.status(200).send({
       data: userCart,
@@ -155,6 +158,37 @@ export const clearCart = catchAsync(async (req, res) => {
 
     await userCart.save();
 
+    res.status(200).send({
+      data: userCart,
+      id: userCart._id,
+    });
+  } catch (error) {
+    res.status(400).send({ message: error.message });
+  }
+});
+
+export const deleteCartItem = catchAsync(async (req, res) => {
+  try {
+    const userId = getUserId(req);
+    const { id } = req.params;
+
+    if (!userId) {
+      res.status(401).send({ message: "Unauthorized: Access is denied!!" });
+    }
+    const userCart = await Cart.findOne({ customer: userId, deleted: false });
+
+    if (!userCart) {
+      res.status(400).send({ message: "Cart not found!" });
+    }
+    const cartItemIndex = userCart.items.findIndex(
+      (item) => item.product.toString() === id
+    );
+
+    if (cartItemIndex === -1) {
+      res.status(400).send({ message: "Product not found!" });
+    }
+    userCart.items.splice(cartItemIndex, 1);
+    await userCart.save();
     res.status(200).send({
       data: userCart,
       id: userCart._id,

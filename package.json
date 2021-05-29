@@ -10,7 +10,7 @@
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
     "start": "node dist/index.js",
     "build": "babel src --out-dir build --copy-files",
-    "dev": "nodemon src/index.js --ext js --exec babel-node"
+    "dev": "nodemon src/index.js --ext js --exec ./node_modules/.bin/babel-node"
   },
   "author": "",
   "license": "ISC",
@@ -43,6 +43,7 @@
     "express": "^4.17.1",
     "joi": "^17.4.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.12.7"
+    "mongoose": "^5.12.7",
+    "nodemon": "^2.0.7"
   }
 }
