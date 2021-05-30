@@ -13,7 +13,7 @@ export const hashPassword = async (password) => {
 
 export const generateAuthToken = (userdDetails) =>
   jwt.sign(userdDetails, process.env.JWT_SECRET, {
-    expiresIn: "7 days",
+    expiresIn: "100 days",
   });
 
 export const getUserId = (request) => {
