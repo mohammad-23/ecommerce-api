@@ -61,6 +61,11 @@ const OrderSchema = new Schema(
         type: String,
         required: true,
       },
+      status: {
+        type: String,
+        enum: ["processing", "failed", "completed"],
+        required: true,
+      },
       currency: {
         type: String,
         required: true,
@@ -79,9 +84,9 @@ const OrderSchema = new Schema(
         type: String,
       },
     },
-    status: {
+    order_status: {
       type: String,
-      enum: ["succeeded", "cancelled", "processing"],
+      enum: ["delivered", "cancelled", "dispatched", "shipped"],
     },
     deleted: {
       type: Boolean,

@@ -14,12 +14,14 @@ export const getOrders = catchAsync(async (req, res) => {
     }
 
     const orders = await Order.find({ customer: userId })
-      .populate("items")
+      .populate("items.product")
       .sort({ createDate: ASCENDING })
       .limit(limit)
       .skip(offset);
 
-    res.status(200).json(orders);
+    const ordersCount = await Order.countDocuments({ deleted: false });
+
+    res.status(200).json({ orders, total: ordersCount });
   } catch (error) {
     res.status(400).send({ message: error.message });
   }
