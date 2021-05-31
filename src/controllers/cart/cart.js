@@ -16,7 +16,10 @@ export const getCart = catchAsync(async (req, res) => {
       res.status(401).send({ message: UNAUTHORIZED });
     }
 
-    const userCart = await Cart.findOne({ customer: userId, deleted: false });
+    const userCart = await Cart.findOne({
+      customer: userId,
+      deleted: false,
+    }).populate("items.product");
 
     res.status(200).send({
       cart: userCart,
@@ -67,7 +70,7 @@ export const updateCart = catchAsync(async (req, res) => {
     const userCart = await Cart.findOne({
       customer: userId,
       deleted: false,
-    });
+    }).populate("items.product");
 
     if (!userCart) {
       res.status(300).send({ message: CART_NOT_FOUND });
@@ -177,7 +180,10 @@ export const deleteCartItem = catchAsync(async (req, res) => {
       res.status(401).send({ message: UNAUTHORIZED });
     }
 
-    const userCart = await Cart.findOne({ customer: userId, deleted: false });
+    const userCart = await Cart.findOne({
+      customer: userId,
+      deleted: false,
+    }).populate("items.product");
 
     if (!userCart) {
       res.status(400).send({ message: CART_NOT_FOUND });

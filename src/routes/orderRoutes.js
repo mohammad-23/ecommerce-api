@@ -12,4 +12,12 @@ module.exports = (app) => {
   app.put("/api/orders/:id", (req, res, next) => {
     orders.updateOrder(req, res, next);
   });
+
+  app.post("/api/create-checkout-session", (req, res, next) => {
+    orders.createCheckoutSession(req, res, next);
+  });
+
+  app.post("/api/stripe-webhook", (req, res) => {
+    orders.handleStripeWebhook(req, res);
+  });
 };

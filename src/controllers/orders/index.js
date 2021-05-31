@@ -1,3 +1,15 @@
-import { getOrders, createOrder, updateOrder } from "./orders";
+import {
+  getOrders,
+  createOrder,
+  updateOrder,
+  createCheckoutSession,
+  handleStripeWebhook,
+} from "./orders";
 
-export default { getOrders, createOrder, updateOrder };
+export default {
+  getOrders,
+  createOrder,
+  updateOrder,
+  createCheckoutSession,
+  handleStripeWebhook,
+};

@@ -35,26 +35,6 @@ const AddressSchema = new Schema({
   },
 });
 
-const CardSchema = new Schema({
-  ends_with: {
-    type: Number,
-  },
-  brand: {
-    type: String,
-  },
-  expiry_date: {
-    month: {
-      type: Number,
-    },
-    year: {
-      type: Number,
-    },
-  },
-  name_on_card: {
-    type: String,
-  },
-});
-
 const UserSchema = new Schema(
   {
     email: {
@@ -80,7 +60,6 @@ const UserSchema = new Schema(
       type: String,
     },
     addresses: [AddressSchema],
-    cards: [CardSchema],
     wishlist: [
       {
         type: Types.ObjectId,
