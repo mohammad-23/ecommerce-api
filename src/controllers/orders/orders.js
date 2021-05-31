@@ -172,21 +172,20 @@ export const handleStripeWebhook = catchAsync(async (req, res) => {
       case "payment_intent.succeeded":
         order.payment.status = "completed";
 
-        await order.save();
         break;
 
       case "payment_intent.payment_failed":
         order.payment.status = "failed";
 
-        await order.save();
         break;
 
       case "payment_intent.processing":
         order.payment.status = "processing";
 
-        await order.save();
         break;
     }
+
+    await order.save();
 
     res.status(200);
   } catch (error) {
