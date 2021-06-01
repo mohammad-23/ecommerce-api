@@ -53,6 +53,7 @@ Create `.env` file and add the following environment vairables:
 - PORT=5000
 - GOOGLE_CLIENT_ID=453703974762-5ddtl273absip5r3rq01io3jlupqmssl.apps.googleusercontent.com
 - GOOGLE_CLIENT_SECRET=8SWH5bYJkQzngUoC7RjIqn0c
+- STRIPE_SECRET_KEY=sk_test_51Iw7VpSG9hoYhpAHcKjGQYe5q6uH4R9Rr4cCiSqclj5TqnuWAfSawmhe2ju09Mwr2J9TfHpDkHOoKfILcrhxkHjw00en8pKFU7
 
 ## Running the project
 

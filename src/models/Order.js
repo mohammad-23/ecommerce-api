@@ -57,10 +57,6 @@ const OrderSchema = new Schema(
         type: Number,
         required: true,
       },
-      brand: {
-        type: String,
-        required: true,
-      },
       status: {
         type: String,
         enum: ["processing", "failed", "completed"],
@@ -74,19 +70,11 @@ const OrderSchema = new Schema(
         type: Number,
         required: true,
       },
-      exp_month: {
-        type: Number,
-      },
-      exp_year: {
-        type: Number,
-      },
-      last4: {
-        type: String,
-      },
     },
     order_status: {
       type: String,
-      enum: ["delivered", "cancelled", "dispatched", "shipped"],
+      enum: ["delivered", "cancelled", "dispatched", "shipped", "placed"],
+      default: "placed",
     },
     deleted: {
       type: Boolean,

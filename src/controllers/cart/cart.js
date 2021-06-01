@@ -16,7 +16,10 @@ export const getCart = catchAsync(async (req, res) => {
       res.status(401).send({ message: UNAUTHORIZED });
     }
 
-    const userCart = await Cart.findOne({ customer: userId, deleted: false });
+    const userCart = await Cart.findOne({
+      customer: userId,
+      deleted: false,
+    }).populate("items.product");
 
     res.status(200).send({
       cart: userCart,
@@ -67,21 +70,19 @@ export const updateCart = catchAsync(async (req, res) => {
     const userCart = await Cart.findOne({
       customer: userId,
       deleted: false,
-    });
+    }).populate("items.product");
 
     if (!userCart) {
       res.status(300).send({ message: CART_NOT_FOUND });
     }
 
     const itemIndexInCart = userCart.items.findIndex(
-      (item) => item.product.toString() === product.id
+      (item) => item.product._id.toString() === product.id
     );
 
     if (itemIndexInCart >= 0) {
-      const itemToUpdate = userCart.items[itemIndexInCart];
-
       addedProduct.inventory.available +=
-        itemToUpdate.quantity - product.quantity;
+        userCart.items[itemIndexInCart].quantity - product.quantity;
 
       if (product.quantity > 0) {
         userCart.items[itemIndexInCart] = {
@@ -177,21 +178,38 @@ export const deleteCartItem = catchAsync(async (req, res) => {
       res.status(401).send({ message: UNAUTHORIZED });
     }
 
-    const userCart = await Cart.findOne({ customer: userId, deleted: false });
+    const userCart = await Cart.findOne({
+      customer: userId,
+      deleted: false,
+    }).populate("items.product");
+    const removedProduct = await Product.findOne({ _id: id });
 
     if (!userCart) {
       res.status(400).send({ message: CART_NOT_FOUND });
     }
 
-    const cartItemIndex = userCart.items.findIndex(
-      (item) => item.product.toString() === id
+    const itemIndexInCart = userCart.items.findIndex(
+      (item) => item.product._id.toString() === id
     );
 
-    if (cartItemIndex === -1) {
+    if (itemIndexInCart >= 0) {
+      removedProduct.inventory.available +=
+        userCart.items[itemIndexInCart].quantity;
+
+      userCart.items.splice(itemIndexInCart, 1);
+    } else {
       res.status(400).send({ message: PRODUCT_NOT_FOUND });
     }
 
-    userCart.items.splice(cartItemIndex, 1);
+    userCart.total_items = userCart.items.reduce(
+      (accumulator, currentValue) => accumulator + currentValue.quantity,
+      0
+    );
+
+    userCart.total_price = userCart.items.reduce(
+      (accumulator, currentValue) => accumulator + currentValue.total_price,
+      0
+    );
 
     await userCart.save();
 

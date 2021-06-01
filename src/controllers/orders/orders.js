@@ -1,3 +1,6 @@
+/* eslint-disable no-case-declarations */
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
 import Cart from "../../models/Cart";
 import Order from "../../models/Order";
 import { getUserId } from "../../utils/user";
@@ -92,6 +95,99 @@ export const updateOrder = catchAsync(async (req, res) => {
       id: userOrder._id,
       message: "Order Updated SUccessfully!",
     });
+  } catch (error) {
+    res.status(400).send({ message: error.message });
+  }
+});
+
+export const createCheckoutSession = catchAsync(async (req, res) => {
+  try {
+    const userId = getUserId(req);
+    const { chosenAddress } = req.body;
+
+    const userCart = await Cart.findOne({ customer: userId })
+      .populate("items.product")
+      .populate("customer");
+
+    const line_items = userCart.items.map((item) => ({
+      price_data: {
+        currency: "usd",
+        product_data: {
+          name: item.product.name,
+        },
+        unit_amount: item.product.price.raw * 100,
+      },
+      quantity: item.quantity,
+    }));
+
+    const {
+      id: sessionId,
+      payment_intent,
+      amount_total,
+      currency,
+    } = await stripe.checkout.sessions.create({
+      customer_email: userCart.customer.email,
+      payment_method_types: ["card"],
+      line_items,
+      mode: "payment",
+      success_url: "http://localhost:3000/payment-status?status=success",
+      cancel_url: "http://localhost:3000/payment-status?status=failure",
+    });
+
+    await Order.create({
+      payment: {
+        transaction_id: payment_intent,
+        amount: amount_total / 100,
+        status: "processing",
+        currency: currency,
+        transaction_createdAt: Date.now(),
+      },
+      customer: userId,
+      total_price: amount_total / 100,
+      total_items: userCart.total_items,
+      items: userCart.items.map((item) => ({
+        product: item.product._id,
+        quantity: item.quantity,
+      })),
+      order_status: "placed",
+      shipping_address: chosenAddress,
+    });
+
+    res.status(200).send({ id: sessionId });
+  } catch (error) {
+    res.status(400).send({ message: error.message });
+  }
+});
+
+export const handleStripeWebhook = catchAsync(async (req, res) => {
+  try {
+    const payload = req.body;
+    const session = payload.data.object;
+
+    const order = await Order.findOne({
+      "payment.transaction_id": session.id,
+    });
+
+    switch (payload.type) {
+      case "payment_intent.succeeded":
+        order.payment.status = "completed";
+
+        break;
+
+      case "payment_intent.payment_failed":
+        order.payment.status = "failed";
+
+        break;
+
+      case "payment_intent.processing":
+        order.payment.status = "processing";
+
+        break;
+    }
+
+    await order.save();
+
+    res.status(200);
   } catch (error) {
     res.status(400).send({ message: error.message });
   }
