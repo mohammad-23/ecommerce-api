@@ -87,7 +87,7 @@ export const updateCart = catchAsync(async (req, res) => {
       if (product.quantity > 0) {
         userCart.items[itemIndexInCart] = {
           quantity: product.quantity,
-          product: product.id,
+          product: addedProduct,
           total_price: product.quantity * addedProduct.price.raw,
         };
       } else {
@@ -97,7 +97,7 @@ export const updateCart = catchAsync(async (req, res) => {
       addedProduct.inventory.available -= product.quantity;
 
       userCart.items.push({
-        product: product.id,
+        product: addedProduct,
         quantity: product.quantity,
         total_price: product.quantity * addedProduct.price.raw,
       });
