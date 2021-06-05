@@ -135,7 +135,7 @@ export const createCheckoutSession = catchAsync(async (req, res) => {
       cancel_url: `${process.env.CLIENT_URL}payment-status?status=failure`,
     });
 
-    const order = await Order.create({
+    await Order.create({
       payment: {
         transaction_id: payment_intent,
         amount: amount_total / 100,
@@ -153,8 +153,6 @@ export const createCheckoutSession = catchAsync(async (req, res) => {
       order_status: "placed",
       shipping_address: chosenAddress,
     });
-
-    console.log("created order", order._id);
 
     res.status(200).send({ id: sessionId });
   } catch (error) {
@@ -205,7 +203,6 @@ export const handleStripeWebhook = catchAsync(async (req, res) => {
 
     res.status(200);
   } catch (error) {
-    console.log("inside catch", JSON.stringify(error, undefined, 4));
     res.status(400).send({ message: error.message });
   }
 });
