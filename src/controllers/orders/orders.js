@@ -2,6 +2,7 @@
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 import Cart from "../../models/Cart";
+import User from "../../models/User";
 import Order from "../../models/Order";
 import { getUserId } from "../../utils/user";
 import catchAsync from "../../utils/catchAsync";
@@ -134,7 +135,7 @@ export const createCheckoutSession = catchAsync(async (req, res) => {
       cancel_url: `${process.env.CLIENT_URL}payment-status?status=failure`,
     });
 
-    await Order.create({
+    const order = await Order.create({
       payment: {
         transaction_id: payment_intent,
         amount: amount_total / 100,
@@ -153,6 +154,8 @@ export const createCheckoutSession = catchAsync(async (req, res) => {
       shipping_address: chosenAddress,
     });
 
+    console.log("created order", order._id);
+
     res.status(200).send({ id: sessionId });
   } catch (error) {
     res.status(400).send({ message: error.message });
@@ -168,9 +171,18 @@ export const handleStripeWebhook = catchAsync(async (req, res) => {
       "payment.transaction_id": session.id,
     });
 
+    const user = await User.findOne({
+      email: session.charges.data[0].billing_details.email,
+    });
+
+    const cart = await Cart.findOne({ customer: user._id });
+
     switch (payload.type) {
       case "payment_intent.succeeded":
         order.payment.status = "completed";
+        cart.items = [];
+        cart.total_items = 0;
+        cart.total_price = 0;
 
         break;
 
@@ -181,14 +193,19 @@ export const handleStripeWebhook = catchAsync(async (req, res) => {
 
       case "payment_intent.processing":
         order.payment.status = "processing";
+        cart.items = [];
+        cart.total_items = 0;
+        cart.total_price = 0;
 
         break;
     }
 
     await order.save();
+    await cart.save();
 
     res.status(200);
   } catch (error) {
+    console.log("inside catch", JSON.stringify(error, undefined, 4));
     res.status(400).send({ message: error.message });
   }
 });

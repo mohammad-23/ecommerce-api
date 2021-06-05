@@ -17,7 +17,7 @@ module.exports = (app) => {
     orders.createCheckoutSession(req, res, next);
   });
 
-  app.post("/api/stripe-webhook", (req, res) => {
-    orders.handleStripeWebhook(req, res);
+  app.post("/api/stripe-webhook", (req, res, next) => {
+    orders.handleStripeWebhook(req, res, next);
   });
 };
