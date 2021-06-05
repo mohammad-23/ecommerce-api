@@ -97,7 +97,11 @@ export const updateUser = catchAsync(async (req, res) => {
     if (wishlist) {
       const addedProduct = await Product.findOne({ _id: wishlist });
 
-      user.wishlist.push(addedProduct);
+      const wishlistItems = user.wishlist.map((item) => item._id.toString());
+
+      if (!wishlistItems.includes(addedProduct._id)) {
+        user.wishlist.push(addedProduct);
+      }
     }
 
     if (address) {
