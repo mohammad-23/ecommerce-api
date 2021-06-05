@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 
 import User from "../../models/User";
+import Product from "../../models/Product";
 import { getUserId } from "../../utils/user";
 import catchAsync from "../../utils/catchAsync";
 import {
@@ -94,7 +95,9 @@ export const updateUser = catchAsync(async (req, res) => {
     }
 
     if (wishlist) {
-      user.wishlist.push(wishlist);
+      const addedProduct = await Product.findOne({ _id: wishlist });
+
+      user.wishlist.push(addedProduct);
     }
 
     if (address) {
