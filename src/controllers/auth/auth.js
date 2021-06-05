@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 
 import User from "../../models/User";
+import Cart from "../../models/Cart";
 import catchAsync from "../../utils/catchAsync";
 import { generateAuthToken } from "../../utils/user";
 
@@ -42,6 +43,8 @@ export const register = catchAsync(async (req, res) => {
 
   try {
     const user = await User.create({ email, password, name, number });
+
+    await Cart.create({ customer: user._id });
 
     // eslint-disable-next-line no-unused-vars
     const { password: _, ...dbUser } = user.toJSON();
