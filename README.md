@@ -47,13 +47,8 @@ If you need to update `npm`, you can make it using `npm`! Cool right? After runn
 
 Create `.env` file and add the following environment vairables:
 
-- MONGODB_URI=mongodb+srv://mohammad:A5tKKw0NjrjSMJpp@cluster0.mrx75.mongodb.net/ecommerce?retryWrites=true&w=majority
-- MONGODB_URI_TEST=mongodb+srv://mohammad:A5tKKw0NjrjSMJpp@cluster0.mrx75.mongodb.net/ecommerce-test?retryWrites=true&w=majority
-- COMMERCE_API_KEY=pk_26067f758a4b63b1c1e280d7f61e1da69ea0b9dc15aea
 - PORT=5000
-- GOOGLE_CLIENT_ID=453703974762-5ddtl273absip5r3rq01io3jlupqmssl.apps.googleusercontent.com
-- GOOGLE_CLIENT_SECRET=8SWH5bYJkQzngUoC7RjIqn0c
-- STRIPE_SECRET_KEY=sk_test_51Iw7VpSG9hoYhpAHcKjGQYe5q6uH4R9Rr4cCiSqclj5TqnuWAfSawmhe2ju09Mwr2J9TfHpDkHOoKfILcrhxkHjw00en8pKFU7
+- CLIENT_URL=http://localhost:3000/
 
 ## Running the project
 

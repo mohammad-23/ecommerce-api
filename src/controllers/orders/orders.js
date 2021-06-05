@@ -130,8 +130,8 @@ export const createCheckoutSession = catchAsync(async (req, res) => {
       payment_method_types: ["card"],
       line_items,
       mode: "payment",
-      success_url: "http://localhost:3000/payment-status?status=success",
-      cancel_url: "http://localhost:3000/payment-status?status=failure",
+      success_url: `${process.env.CLIENT_URL}payment-status?status=success`,
+      cancel_url: `${process.env.CLIENT_URL}payment-status?status=failure`,
     });
 
     await Order.create({
