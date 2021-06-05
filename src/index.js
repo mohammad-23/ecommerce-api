@@ -41,7 +41,10 @@ const listen = () => {
 app.use(express.json({ limit: "5mb" }));
 app.use(express.urlencoded({ limit: "5mb", extended: true }));
 
-const whitelistedOrigins = ["http://localhost:3000"];
+const whitelistedOrigins = [
+  "http://localhost:3000",
+  "https://kappa-com.vercel.app",
+];
 
 app.use(
   cors({
