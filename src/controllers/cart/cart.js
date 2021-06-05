@@ -128,14 +128,12 @@ export const updateCart = catchAsync(async (req, res) => {
 export const clearCart = catchAsync(async (req, res) => {
   try {
     const userId = getUserId(req);
-    const { cartId } = req.body;
 
     if (!userId) {
       res.status(401).send({ message: UNAUTHORIZED });
     }
 
     const userCart = await Cart.findOne({
-      _id: cartId,
       customer: userId,
       deleted: false,
     });
